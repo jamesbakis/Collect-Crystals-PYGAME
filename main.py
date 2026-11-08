@@ -1,6 +1,7 @@
 # Example file showing a circle moving on screen
 import pygame
 import random
+import math
 
 # pygame setup
 pygame.init()
@@ -13,6 +14,7 @@ timer = 0
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 enemy_1_pos = pygame.Vector2(300, 360)
 enemy_2_pos = pygame.Vector2(980, 360)
+crystal = pygame.Vector2(640, 500)
 
 enemies = [[enemy_1_pos, 0], [enemy_2_pos, 0]]
 
@@ -34,6 +36,8 @@ while running:
     pygame.draw.circle(screen, "red", enemy_1_pos, 40)
 
     pygame.draw.circle(screen, "red", enemy_2_pos, 40)
+
+    pygame.draw.circle(screen, "cyan", crystal, 30)
 
     speed = 500
     keys = pygame.key.get_pressed()
@@ -62,12 +66,36 @@ while running:
         timer = 0
 
     for enemy in enemies:
-        if enemy[1] == 1 and enemy[0].y > 40:
+        if enemy[1] == 1:
+            if enemy[0].y > 40:
+                pass
+            else:
+                enemy[0].y = 680
             enemy[0].y -= speed * dt
-        if enemy[1] == 2 and enemy[0].y < 680:
+        if enemy[1] == 2:
+            if enemy[0].y < 680:
+                pass
+            else:
+                enemy[0].y = 40
             enemy[0].y += speed * dt
-        if enemy[1] == 3 and enemy[0].x > 40:
+        if enemy[1] == 3:
+            if enemy[0].x > 40:
+                pass
+            else:
+                enemy[0].x = 1240
             enemy[0].x -= speed * dt
-        if enemy[1] == 4 and enemy[0].x < 1240:
+        if enemy[1] == 4:
+            if enemy[0].x < 1240:
+                pass
+            else:
+                enemy[0].x = 40
             enemy[0].x += speed * dt
+
+    for enemy in enemies:
+        if math.sqrt((player_pos[0] - enemy[0][0])**2 + (player_pos[1] - enemy[0][1])**2) < 50:
+            running = False
+
+    if math.sqrt((player_pos[0] - crystal[0])**2 + (player_pos[1] - crystal[1])**2) < 50:
+        crystal[0] = (random.random() * 1280).__ceil__()
+        crystal[1] = (random.random() * 720).__ceil__()
 pygame.quit()
