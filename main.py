@@ -10,6 +10,7 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 timer = 0
+score = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 enemy_1_pos = pygame.Vector2(300, 360)
@@ -17,6 +18,8 @@ enemy_2_pos = pygame.Vector2(980, 360)
 crystal = pygame.Vector2(640, 500)
 
 enemies = [[enemy_1_pos, 0], [enemy_2_pos, 0]]
+
+font = pygame.font.Font(None, 50)
 
 def change_momentum(enemy_count):
      return [(random.random() * 4).__ceil__() for i in range(enemy_count)]
@@ -39,6 +42,9 @@ while running:
 
     pygame.draw.circle(screen, "cyan", crystal, 30)
 
+    text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
+    screen.blit(text_surface, (575, 550)) 
+
     speed = 500
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and player_pos.y > 40:
@@ -52,7 +58,7 @@ while running:
         
     if keys[pygame.K_d] and player_pos.x < 1240:
         player_pos.x += speed * dt
-            
+      
     # flip() the display to put your work on screen
     pygame.display.flip()
 
@@ -98,4 +104,7 @@ while running:
     if math.sqrt((player_pos[0] - crystal[0])**2 + (player_pos[1] - crystal[1])**2) < 50:
         crystal[0] = (random.random() * 1280).__ceil__()
         crystal[1] = (random.random() * 720).__ceil__()
+        score += 1
+        
+       
 pygame.quit()
