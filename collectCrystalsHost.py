@@ -143,6 +143,13 @@ while running:
         crystal[0] = (random.random() * 1280).__ceil__()
         crystal[1] = (random.random() * 720).__ceil__()
         score += 1
+
+    if math.sqrt((player_2_pos[0] - crystal[0])**2 + (player_2_pos[1] - crystal[1])**2) < 50:
+            crystal[0] = (random.random() * 1280).__ceil__()
+            crystal[1] = (random.random() * 720).__ceil__()
+            score += 1
+    
+              
     try:
         gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score}").encode()
         server.sendto(gameData, (os.getenv("IP"), 60000))
