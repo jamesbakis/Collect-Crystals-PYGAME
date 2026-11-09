@@ -31,6 +31,7 @@ timer = 0
 score = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+player_2_pos = pygame.Vector2(-1000, -1000)
 enemy_1_pos = pygame.Vector2(300, 360)
 enemy_2_pos = pygame.Vector2(980, 360)
 crystal = pygame.Vector2(640, 500)
@@ -135,6 +136,8 @@ while running:
     for enemy in enemies:
         if math.sqrt((player_pos[0] - enemy[0][0])**2 + (player_pos[1] - enemy[0][1])**2) < 50:
             running = False
+        if math.sqrt((player_2_pos[0] - enemy[0][0])**2 + (player_2_pos[1] - enemy[0][1])**2) < 50:
+                    running = False
 
     if math.sqrt((player_pos[0] - crystal[0])**2 + (player_pos[1] - crystal[1])**2) < 50:
         crystal[0] = (random.random() * 1280).__ceil__()
