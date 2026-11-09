@@ -10,10 +10,6 @@ def startServer():
 
     buffer = 1024
 
-    serverMsg = "UDP working..."
-
-    byteMessage = str.encode(serverMsg)
-
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     serverSocket.bind((HOST, PORT))
 
@@ -22,7 +18,6 @@ def startServer():
     while True:
         data, addr = serverSocket.recvfrom(buffer)
         print(f"Received from {addr}: {data.decode()}")
-        serverSocket.sendto(byteMessage, addr)
 
 if __name__ == "__main__":
     startServer()

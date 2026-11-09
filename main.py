@@ -22,6 +22,7 @@ byteMessage = str.encode(serverMsg)
 
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind((HOST, PORT))
+server.setblocking(False)
 
 # pygame setup
 pygame.init()
@@ -42,7 +43,8 @@ enemies = [[enemy_1_pos, 0], [enemy_2_pos, 0]]
 font = pygame.font.Font(None, 50)
 
 def change_momentum(enemy_count):
-     return [(random.random() * 4).__ceil__() for i in range(enemy_count)]
+     return 5, 5
+     #return [(random.random() * 4).__ceil__() for i in range(enemy_count)]
     
 while running:
     # poll for events
@@ -52,7 +54,7 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    screen.fill("white")
 
     pygame.draw.circle(screen, "green", player_pos, 40)
 
@@ -64,6 +66,15 @@ while running:
 
     text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(text_surface, (575, 550)) 
+
+    try:
+        data, addr = server.recvfrom(1024)
+        player_2_data = data.decode().split(",")
+        player_2_pos = pygame.Vector2(float(player_2_data[0]), float(player_2_data[1]))
+        pygame.draw.circle(screen, "purple", player_2_pos, 40)
+
+    except (BlockingIOError, ConnectionResetError):
+        pass
 
     speed = 500
     keys = pygame.key.get_pressed()
@@ -125,8 +136,9 @@ while running:
         crystal[0] = (random.random() * 1280).__ceil__()
         crystal[1] = (random.random() * 720).__ceil__()
         score += 1
-    
-    gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score}").encode()
-    server.sendto(gameData, (os.getenv("IP"), 60000))
-
+    try:
+        gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score}").encode()
+        server.sendto(gameData, (os.getenv("IP"), 60000))
+    except ConnectionResetError:
+        pass
 pygame.quit()   
