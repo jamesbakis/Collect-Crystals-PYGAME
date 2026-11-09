@@ -29,6 +29,7 @@ running = True
 dt = 0
 timer = 0
 score = 0
+score2 = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 player_2_pos = pygame.Vector2(-1000, -1000)
@@ -63,7 +64,10 @@ while running:
     pygame.draw.circle(screen, "cyan", crystal, 30)
 
     text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
-    screen.blit(text_surface, (575, 550)) 
+    screen.blit(text_surface, (300, 550)) 
+
+    text_surface2 = font.render(f"Score: {score2}", True, (0, 0, 0))
+    screen.blit(text_surface2, (880, 550)) 
 
     try:
         data, addr = server.recvfrom(1024)
@@ -147,11 +151,11 @@ while running:
     if math.sqrt((player_2_pos[0] - crystal[0])**2 + (player_2_pos[1] - crystal[1])**2) < 50:
             crystal[0] = (random.random() * 1280).__ceil__()
             crystal[1] = (random.random() * 720).__ceil__()
-            score += 1
+            score2 += 1
     
               
     try:
-        gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score}").encode()
+        gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score},{score2}").encode()
         server.sendto(gameData, (os.getenv("IP"), 60000))
     except ConnectionResetError:
         pass

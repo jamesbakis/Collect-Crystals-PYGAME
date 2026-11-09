@@ -42,6 +42,7 @@ def startClient():
             enemy_2_pos = pygame.Vector2(float(gameData[4]), float(gameData[5]))
             crystal = pygame.Vector2(float(gameData[6]), float(gameData[7]))
             score = int(gameData[8])
+            score2 = int(gameData[9])
                 
             screen.fill("orange")
 
@@ -56,7 +57,9 @@ def startClient():
             pygame.draw.circle(screen, "cyan", crystal, 30)
 
             text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
-            screen.blit(text_surface, (575, 550)) 
+            screen.blit(text_surface, (300, 550))
+            text_surface2 = font.render(f"Score: {score2}", True, (0, 0, 0))
+            screen.blit(text_surface2, (880, 550)) 
             dt = clock.tick(60) / 1000
             keys = pygame.key.get_pressed()
             if keys[pygame.K_w] and player_2.y > 40:
