@@ -77,7 +77,7 @@ while running:
         try:
             # Drain the buffer: keep reading until it throws BlockingIOError
             server.recvfrom(buffer)
-        except BlockingIOError:
+        except (BlockingIOError, ConnectionResetError):
             break
 
     speed = 500
