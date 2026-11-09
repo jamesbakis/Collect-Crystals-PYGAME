@@ -1,7 +1,27 @@
 # Example file showing a circle moving on screen
+import os
+import threading
 import pygame
 import random
 import math
+import collectCrystalsClient
+import collectCrystalsServer
+import socket
+from dotenv import load_dotenv
+
+load_dotenv()
+
+HOST = "0.0.0.0"
+PORT = 5000
+
+buffer = 1024
+
+serverMsg = "UDP working..."
+
+byteMessage = str.encode(serverMsg)
+
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server.bind((HOST, PORT))
 
 # pygame setup
 pygame.init()
@@ -105,6 +125,8 @@ while running:
         crystal[0] = (random.random() * 1280).__ceil__()
         crystal[1] = (random.random() * 720).__ceil__()
         score += 1
-        
-       
-pygame.quit()
+    
+    gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score}").encode()
+    server.sendto(gameData, (os.getenv("IP"), 60000))
+
+pygame.quit()   
