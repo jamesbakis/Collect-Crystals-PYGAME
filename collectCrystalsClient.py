@@ -75,6 +75,13 @@ def startClient():
         except BlockingIOError:
             pass
 
+        while True:
+            try:
+                # Drain the buffer: keep reading until it throws BlockingIOError
+                client.recvfrom(buffer)
+            except BlockingIOError:
+                break
+
         player_data = (f"{player_2.x},{player_2.y}").encode()    
         client.sendto(player_data, (os.getenv("IP"), 5000))
 
