@@ -147,7 +147,7 @@ def startHost():
                 screen.blit(text_surface, (300, 550))
                 p2Win = True
             if math.sqrt((player_2_pos[0] - enemy[0][0])**2 + (player_2_pos[1] - enemy[0][1])**2) < 50:
-                text_surface2 = font.render(f"Score: {score2}\nPlayer 2", True, (0, 0, 0))
+                text_surface2 = font.render(f"Score: {score2}\nPlayer 2 Died!", True, (0, 0, 0))
                 screen.blit(text_surface2, (880, 550))
                 p1Win = True
         if score == scoreLimit:
