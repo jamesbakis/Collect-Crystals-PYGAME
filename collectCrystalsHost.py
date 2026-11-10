@@ -12,10 +12,6 @@ def startHost():
 
     buffer = 1024
 
-    serverMsg = "UDP working..."
-
-    byteMessage = str.encode(serverMsg)
-
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.bind((HOST, PORT))
     server.setblocking(False)
@@ -28,11 +24,9 @@ def startHost():
     dt = 0
     timer = 0
     score = 0
-    score2 = 0
-    p1Win = False
-    p2Win = False
-    scoreLimit = 100
+    gameOver = False
     twoPlayers = False
+    start_game = False
 
     player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
     player_2_pos = pygame.Vector2(-1000, -1000)
@@ -43,7 +37,6 @@ def startHost():
 
     font = pygame.font.Font(None, 50)
     text_surface = None
-    text_surface2 = None
     data = None
 
     def change_momentum(enemy_count):
@@ -67,14 +60,12 @@ def startHost():
 
         pygame.draw.circle(screen, "cyan", crystal, 30)
 
-        if not (p1Win or p2Win):
-            text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
-            text_surface2 = font.render(f"Score: {score2}", True, (0, 0, 0))
-        screen.blit(text_surface, (300, 550)) 
-        screen.blit(text_surface2, (880, 550)) 
+        
+        text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
+        screen.blit(text_surface, (500, 550))  
         while True:
             try:
-                data, addr = server.recvfrom(1024)
+                data, addr = server.recvfrom(buffer)
             except (BlockingIOError, ConnectionResetError):
                 break
 
@@ -86,7 +77,12 @@ def startHost():
         speed = 500
         enemyTax = 200
         keys = pygame.key.get_pressed()
-        if not (p1Win or p2Win):
+        if keys[pygame.K_SPACE]:
+            start_game = True
+        dt = clock.tick(60) / 1000
+        timer += dt
+        if not gameOver and twoPlayers and start_game:
+            
             if keys[pygame.K_w] and player_pos.y > 40:
                 player_pos.y -= speed * dt
                     
@@ -98,65 +94,47 @@ def startHost():
                 
             if keys[pygame.K_d] and player_pos.x < 1240:
                 player_pos.x += speed * dt
-        
-        # flip() the display to put your work on screen
-        pygame.display.flip()
 
-        # limits FPS to 60
-        # dt is delta time in seconds since last frame, used for framerate-
-        # independent physics.
-        dt = clock.tick(60) / 1000
-        timer += dt
-        if not (p1Win or p2Win):
             if timer >= 1.0 and twoPlayers:
                 enemies[0][1], enemies[1][1] = change_momentum(2)
                 timer = 0
-        else:
-            pass
 
-        for enemy in enemies:
-            if enemy[1] == 1:
-                if enemy[0].y > 40:
-                    pass
-                else:
-                    enemy[0].y = 680
-                enemy[0].y -= (speed - enemyTax) * dt
-            if enemy[1] == 2:
-                if enemy[0].y < 680:
-                    pass
-                else:
-                    enemy[0].y = 40
-                enemy[0].y += (speed - enemyTax) * dt
-            if enemy[1] == 3:
-                if enemy[0].x > 40:
-                    pass
-                else:
-                    enemy[0].x = 1240
-                enemy[0].x -= (speed - enemyTax) * dt
-            if enemy[1] == 4:
-                if enemy[0].x < 1240:
-                    pass
-                else:
-                    enemy[0].x = 40
-                enemy[0].x += (speed - enemyTax) * dt
+            for enemy in enemies:
+                if enemy[1] == 1:
+                    if enemy[0].y > 40:
+                        pass
+                    else:
+                        enemy[0].y = 680
+                    enemy[0].y -= (speed - enemyTax) * dt
+                if enemy[1] == 2:
+                    if enemy[0].y < 680:
+                        pass
+                    else:
+                        enemy[0].y = 40
+                    enemy[0].y += (speed - enemyTax) * dt
+                if enemy[1] == 3:
+                    if enemy[0].x > 40:
+                        pass
+                    else:
+                        enemy[0].x = 1240
+                    enemy[0].x -= (speed - enemyTax) * dt
+                if enemy[1] == 4:
+                    if enemy[0].x < 1240:
+                        pass
+                    else:
+                        enemy[0].x = 40
+                    enemy[0].x += (speed - enemyTax) * dt
 
         for enemy in enemies:
             if math.sqrt((player_pos[0] - enemy[0][0])**2 + (player_pos[1] - enemy[0][1])**2) < 50:
-                text_surface = font.render(f"Score: {score}\nPlayer 1 Died!", True, (0, 0, 0))
-                screen.blit(text_surface, (300, 550))
-                p2Win = True
+                text_surface = font.render(f"Score: {score}\nGAME OVER", True, (0, 0, 0))
+                screen.blit(text_surface, (500, 550))
+                gameOver = True
             if math.sqrt((player_2_pos[0] - enemy[0][0])**2 + (player_2_pos[1] - enemy[0][1])**2) < 50:
-                text_surface2 = font.render(f"Score: {score2}\nPlayer 2 Died!", True, (0, 0, 0))
-                screen.blit(text_surface2, (880, 550))
-                p1Win = True
-        if score == scoreLimit:
-            text_surface = font.render(f"Score: {score}\nPlayer 1 Wins!", True, (0, 0, 0))
-            screen.blit(text_surface, (300, 550)) 
-            p1Win = True
-        if score2 == scoreLimit:
-            text_surface2 = font.render(f"Score: {score2}\nPlayer 2 Wins!", True, (0, 0, 0))
-            screen.blit(text_surface2, (880, 550)) 
-            p2Win = True
+                text_surface = font.render(f"Score: {score}\nGAME OVER", True, (0, 0, 0))
+                screen.blit(text_surface, (500, 550))
+                gameOver = True
+
         if math.sqrt((player_pos[0] - crystal[0])**2 + (player_pos[1] - crystal[1])**2) < 50:
             crystal[0] = (random.random() * 1280).__ceil__()
             crystal[1] = (random.random() * 720).__ceil__()
@@ -165,12 +143,14 @@ def startHost():
         if math.sqrt((player_2_pos[0] - crystal[0])**2 + (player_2_pos[1] - crystal[1])**2) < 50:
                 crystal[0] = (random.random() * 1280).__ceil__()
                 crystal[1] = (random.random() * 720).__ceil__()
-                score2 += 1
+                score += 1
         
                 
         try:
-            gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score},{score2},{p1Win},{p2Win}").encode()
+            gameData = (f"{player_pos.x},{player_pos.y},{enemy_1_pos.x},{enemy_1_pos.y},{enemy_2_pos.x},{enemy_2_pos.y},{crystal.x},{crystal.y},{score},{gameOver},{start_game}").encode()
             server.sendto(gameData, (os.getenv("IP", "127.0.0.1"), 60000))
         except ConnectionResetError:
             pass
+
+        pygame.display.flip()
    

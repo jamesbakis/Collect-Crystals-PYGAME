@@ -27,10 +27,9 @@ def startClient():
     enemy_1_pos = pygame.Vector2(-1000, -1000)
     enemy_2_pos = pygame.Vector2(-1000, -1000)
     crystal = pygame.Vector2(-1000, -1000)
-    p1Win = False
-    p2Win = False
     score = 0
-    score2 = 0
+    gameOver = False
+    startGame = False
     data = None
     while running: 
 
@@ -50,12 +49,8 @@ def startClient():
             enemy_2_pos = pygame.Vector2(float(gameData[4]), float(gameData[5]))
             crystal = pygame.Vector2(float(gameData[6]), float(gameData[7]))
             score = int(gameData[8])
-            score2 = int(gameData[9])
-            p1Win = gameData[10] == "True"
-            p2Win = gameData[11] == "True"
-            print(p1Win)
-            print(p2Win)
-                
+            gameOver = gameData[9] == "True"
+            startGame = gameData[10] == "True"
         screen.fill("orange")
 
         pygame.draw.circle(screen, "purple", player_2, 40)
@@ -64,20 +59,15 @@ def startClient():
         pygame.draw.circle(screen, "red", enemy_2_pos, 40)
         pygame.draw.circle(screen, "cyan", crystal, 30)
 
-        if p1Win:
-            text_surface = font.render(f"Score: {score}\nPlayer 1 Wins!", True, (0, 0, 0))
+        if gameOver:
+            text_surface = font.render(f"Score: {score}\nGAME OVER!", True, (0, 0, 0))
         else:
             text_surface = font.render(f"Score: {score}", True, (0, 0, 0))
-        screen.blit(text_surface, (300, 550))
-        if p2Win:
-            text_surface2 = font.render(f"Score: {score2}\nPlayer 2 Wins!", True, (0, 0, 0))
-        else:
-            text_surface2 = font.render(f"Score: {score2}", True, (0, 0, 0))
-        screen.blit(text_surface2, (880, 550)) 
+        screen.blit(text_surface, (500, 550))
         dt = clock.tick(60) / 1000
         
         keys = pygame.key.get_pressed()
-        if not (p1Win or p2Win):
+        if not gameOver and startGame:
             if keys[pygame.K_w] and player_2.y > 40:
                 player_2.y -= speed * dt
                     
