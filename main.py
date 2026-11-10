@@ -53,13 +53,13 @@ while True:
             if width/4 <= mouse[0] <= width/4+140 and height/2 <= mouse[1] <= height/2+40:
                 try:
                     collectCrystalsHost.startHost()
-                except ConnectionResetError, OSError:
+                except (ConnectionResetError, OSError):
                     pass
                 break
             if (3 * width)/4 <= mouse[0] <= (3 * width)/2+140 and height/2 <= mouse[1] <= height/2+40:
                 try:
                     collectCrystalsClient.startClient()
-                except ConnectionResetError, OSError:
+                except (ConnectionResetError, OSError):
                     pass
 
     if exitWhile:
