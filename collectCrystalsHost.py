@@ -31,7 +31,7 @@ def startHost():
     score2 = 0
     p1Win = False
     p2Win = False
-    scoreLimit = 3
+    scoreLimit = 100
     twoPlayers = False
 
     player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
