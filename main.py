@@ -61,7 +61,8 @@ while True:
                 try:
                     collectCrystalsClient.startClient()
                 except ConnectionResetError:
-                    pass 
+                    pass
+                exitWhile = True 
 
     if exitWhile:
         break              
