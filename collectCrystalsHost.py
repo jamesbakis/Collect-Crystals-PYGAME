@@ -47,8 +47,7 @@ def startHost():
     data = None
 
     def change_momentum(enemy_count):
-        return [-5, -5]
-        #return [(random.random() * 4).__ceil__() for i in range(enemy_count)]
+        return [(random.random() * 4).__ceil__() for i in range(enemy_count)]
         
     while running:
         # poll for events
